@@ -1,13 +1,10 @@
 #include "mgos.h"
 
-static void timer_cb(void *arg)
-{
-    // Write your code here
-    (void)arg;
-}
-
 enum mgos_app_init_result mgos_app_init(void)
 {
-    mgos_set_timer(1000 /* ms */, MGOS_TIMER_REPEAT, timer_cb, NULL);
+    mgos_gpio_set_mode(15, MGOS_GPIO_MODE_OUTPUT);
+    mgos_gpio_write(15, false);
+    mgos_msleep(4000); // sleeping for 4 seconds to turn on gsm modem
+    mgos_gpio_write(15, true);
     return MGOS_APP_INIT_SUCCESS;
 }

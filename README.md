@@ -24,3 +24,17 @@ The hardware that we are using:
 
   - ESP32 Dev Board
   - SIM868 Module Board
+
+## Hardware Connections
+  
+  - UART 1 is used
+  - Common GND for ESP32 and SIM868 module
+  - GPIO15 of ESP32 is connected to GPIO7 (RPi Board) pin on SIM868 module. Pulling it low for 4 seconds and then pulling it high turns the module on.
+  - Dedicated power supply to SIM868 is required otherwise it would keep restarting.
+
+## Details
+PPP library automatically connects to the GPRS network and obtains an IP address.
+
+## Resources
+
+  - https://simcom.ee/modules/gsm-gprs-gnss/sim868/
