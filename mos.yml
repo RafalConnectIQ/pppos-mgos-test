@@ -5,6 +5,7 @@ version: 1.0
 libs_version: ${mos.version}
 modules_version: ${mos.version}
 mongoose_os_version: ${mos.version}
+manifest_version: 2017-09-29
 
 # Optional. List of tags for online search.
 tags:
@@ -23,11 +24,43 @@ sources:
 # Uncomment and modify according to your needs:
 
 config_schema:
- - ["pppos.enable", true]
- - ["pppos.uart_no", 1]
- - ["pppos.baud_rate", 9600]
- - ["pppos.fc_enable", false]
- - ["pppos.apn", "internet"]
+
+  - ["wifi.ap.enable", false ]
+  - ["wifi.ap.ssid", "s", "ConnectIQ_Box_??????", {title: "SSID"} ]
+  - ["wifi.ap.pass", "s", "", {title: "Password", type: "null"} ]
+
+  - ["wifi.sta.enable", false ]
+  - ["wifi.sta.ssid", "TP-LINK_2.4GHz_B527BE" ]
+  - ["wifi.sta.pass", "25401714" ]
+
+  - ["pppos.fc_enable", false]
+  - ["pppos.enable", "b", true, {title: "Enable PPPoS"}]
+  - ["pppos.uart_no", "i", 2, {title: "Which UART to use"}]
+  - ["pppos.baud_rate", "i", 115200, {title: "Baud rate to use for data transfer"}]
+  - ["pppos.start_baud_rate", "i", 115200, {title: "Starting baud rate, used for initial configuration"}]
+  - ["pppos.rx_gpio", "i", 27, {title: "RX pin; -1 = use default"}]
+  - ["pppos.tx_gpio", "i", 26, {title: "TX pin; -1 = use default"}]
+  - ["pppos.cts_gpio", "i", 0, {title: "CTS pin; -1 = use default"}]
+  - ["pppos.rts_gpio", "i", 0, {title: "RTS pin; -1 = use default"}]
+
+  # These depend on the operator and are usually well known.
+  - ["pppos.apn", "s", "iot.1nce.net", {title: "APN name"}]
+  - ["pppos.user", "s", " ", {title: "User name"}]
+  - ["pppos.pass", "s", " ", {title: "Password"}]
+  - ["pppos.connect_on_startup", "b", false, {title: "Connect immediately on startup"}]
+  - ["pppos.rst_gpio", "i", -1, {title: "Reset pin; -1 = no reset"}]
+  # - ["pppos.rst_gpio", "i", 14, {title: "Reset pin; -1 = no reset"}]
+  - ["pppos.rst_act", "i", 0, {title: "Active level, 0 or 1"}]
+  - ["pppos.rst_hold_ms", "i", 100, {title: "Time to hold reset pin in active state"}]
+  - ["pppos.rst_wait_ms", "i", 5000, {title: "Time to wait after reset before initializing"}]
+  - ["pppos.rst_mode", "i", 0, {title: "Reset mode: 0 - on first connect only, 1 - on every connect"}]
+  # Misc settings.
+  - ["pppos.echo_interval", "i", 10, {title: "LCP Echo interval, seconds"}]
+  - ["pppos.echo_fails", "i", 3, {title: "Number of failed echos before connection is declared dead and retried"}]
+  - ["pppos.hexdump_enable", "b", true, {title: "Dump all the data sent over UART to stderr"}]
+  - ["pppos.reg_cmd", "s", "CREG", {title: "AT command used for setting and checking network registration. CREG(default-2G), CGREG, CEREG-LTE"}]
+  - ["pppos.cfun_cycle", "b", false, {title: "Set CFUN to 0, then to 1"}]
+  - ["debug.level", 3]
 
 
 # These settings get compiled into the C structure, and can be accessed
@@ -54,5 +87,10 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-config
   - origin: https://github.com/mongoose-os-libs/rpc-uart
 
-# Used by the mos tool to catch mos binaries incompatible with this file format
-manifest_version: 2017-09-29
+build_vars:
+
+   ESP_IDF_SDKCONFIG_OPTS: >
+    ${build_vars.ESP_IDF_SDKCONFIG_OPTS} 
+    CONFIG_PPP_SUPPORT=y
+    CONFIG_PPP_PAP_SUPPORT=y
+    CONFIG_PPP_DEBUG_ON=y
